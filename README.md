@@ -46,8 +46,9 @@ docker-compose up -d --build
 # Setup database
 docker-compose exec backend npm run migrate
 docker-compose exec backend npm run seed
-⚠ IMPORTANT: Save the API key - it will not be shown again!
+> 💡 **Tip**: The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
 
+```
 ### Step 3: Access
 
 1. **Open your browser**: http://localhost
@@ -56,9 +57,7 @@ docker-compose exec backend npm run seed
 
 **That's it!** You're ready to use APi-Saver.
 
-> 💡 **Tip**: The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
 
-```
 
 **Database connection errors?**
 ```bash
@@ -212,6 +211,7 @@ curl http://localhost/api/v1/proxy/your-source-name/path \
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
 
 
 
