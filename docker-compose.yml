@@ -1,0 +1,139 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: apisaver-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-apisaver}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U apisaver -d apisaver"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - apisaver-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: apisaver-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-apisaver}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      DATABASE_URL: ${DATABASE_URL}
+      PORT: 3000
+      HOST: 0.0.0.0
+      NODE_ENV: ${NODE_ENV:-development}
+      JWT_SECRET: ${JWT_SECRET}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
+      DEFAULT_CACHE_TTL: ${DEFAULT_CACHE_TTL:-3600}
+      SOURCE_SELECTION_MODE: ${SOURCE_SELECTION_MODE:-priority}
+      RATE_LIMIT_MAX: ${RATE_LIMIT_MAX:-100}
+      RATE_LIMIT_WINDOW_MS: ${RATE_LIMIT_WINDOW_MS:-60000}
+      CORS_ORIGINS: http://localhost,http://localhost:80,http://frontend
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # Uncomment for HA deployments (requires redis service above)
+      # REDIS_URL: redis://redis:6379
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - apisaver-network
+    # Uncomment for development/debugging
+    # ports:
+    #   - "3000:3000"
+
+  # Frontend UI
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: apisaver-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    # Port mapping removed - frontend is accessed through nginx reverse proxy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - apisaver-network
+
+  # Reverse proxy + TLS (Let's Encrypt)
+  nginx:
+    image: nginx:alpine
+    container_name: apisaver-nginx
+    restart: unless-stopped
+    depends_on:
+      - frontend
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/default-http.conf.template:/etc/nginx/templates/default-http.conf.template:ro
+      - ./nginx/default-https.conf.template:/etc/nginx/templates/default-https.conf.template:ro
+      - ./certbot/conf:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
+    networks:
+      - apisaver-network
+    command: /bin/sh -c "DOMAIN=$${DOMAIN:-localhost}; SSL_CERT=/etc/letsencrypt/live/$$DOMAIN/fullchain.pem; SSL_KEY=/etc/letsencrypt/live/$$DOMAIN/privkey.pem; if [ -f $$SSL_CERT ] && [ -f $$SSL_KEY ]; then echo 'SSL certificates found - enabling HTTPS'; envsubst '$$DOMAIN' < /etc/nginx/templates/default-https.conf.template > /etc/nginx/conf.d/default.conf; else echo 'SSL certificates not found - HTTP only'; envsubst '$$DOMAIN' < /etc/nginx/templates/default-http.conf.template > /etc/nginx/conf.d/default.conf; fi; nginx -g 'daemon off;'"
+
+  certbot:
+    image: certbot/certbot
+    container_name: apisaver-certbot
+    restart: unless-stopped
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --quiet; sleep 12h & wait $${!}; done;'"
+    networks:
+      - apisaver-network
+
+  # Redis (optional - for HA deployments with multiple backend instances)
+  # Uncomment to enable shared rate limiting and job locks across instances
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: apisaver-redis
+  #   restart: unless-stopped
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+  #   networks:
+  #     - apisaver-network
+
+volumes:
+  postgres_data:
+    driver: local
+  # redis_data:
+  #   driver: local
+
+networks:
+  apisaver-network:
+    driver: bridge
+
