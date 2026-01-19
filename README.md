@@ -52,8 +52,8 @@ docker-compose exec backend npm run seed
 ### Step 3: Access
 
 1. **Open your browser**: http://localhost
-2. **Login**: Use the API key shown in the seed output (or check logs: `docker-compose logs backend | grep "api_key"`)
-3. **Add your first API source** in the dashboard (up to 2 sources in demo version)
+2. **Login**: Use the API key shown in the seed output.
+3. **Add your first API source** in the dashboard ( 2 sources in demo version pre-installed)
 
 **That's it!** You're ready to use APi-Saver.
 
@@ -201,6 +201,7 @@ curl http://localhost/api/v1/proxy/your-source-name/path \
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
 
 
 
