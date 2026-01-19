@@ -58,15 +58,6 @@ docker-compose exec backend npm run seed
 
 > 💡 **Tip**: The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
 
-### Troubleshooting
-
-**Can't access the UI?**
-```bash
-# Check if containers are running
-docker-compose ps
-
-# View logs
-docker-compose logs backend
 ```
 
 **Database connection errors?**
@@ -221,6 +212,7 @@ curl http://localhost/api/v1/proxy/your-source-name/path \
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
 
 
 
