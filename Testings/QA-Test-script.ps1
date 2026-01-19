@@ -1,4 +1,4 @@
-$API_KEY = "ask_U72Szv6Fp9Uvr9z2FGsyqomzbn6p6Ymp"
+$API_KEY = "ask_CHANGE_API_KEY_FROM_SEED"
 $BASE_URL = "http://localhost"
 
 # Define headers once at the start
