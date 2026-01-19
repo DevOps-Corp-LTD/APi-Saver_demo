@@ -46,7 +46,7 @@ docker-compose up -d --build
 # Setup database
 docker-compose exec backend npm run migrate
 docker-compose exec backend npm run seed
-⚠ IMPORTANT: Save this API key - it will not be shown again!
+⚠ IMPORTANT: Save the API key - it will not be shown again!
 
 ### Step 3: Access
 
@@ -232,3 +232,4 @@ MIT
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
