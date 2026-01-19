@@ -58,19 +58,9 @@ docker-compose exec backend npm run seed
 **That's it!** You're ready to use APi-Saver.
 
 
-
-**Database connection errors?**
-```bash
-# Reset everything (demo only - deletes data!)
-docker-compose down -v
-docker-compose up -d --build
-docker-compose exec backend npm run migrate
-docker-compose exec backend npm run seed
-```
-
 **Need to see your API key again?**
 ```bash
-docker-compose logs backend | grep "API Key"
+docker-compose logs backend | grep "api_key"
 ```
 
 ## 📖 How It Works
@@ -211,6 +201,7 @@ curl http://localhost/api/v1/proxy/your-source-name/path \
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
 
 
 
