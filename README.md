@@ -34,19 +34,20 @@
 
 ```bash
 # If you haven't already, clone the repository
-# git clone <repository-url>
-# cd APi-Saver
+git clone https://github.com/yotamkrief/APi-Saver_demo.git
+cd APi-Saver_demo
 
 # Copy environment file (no editing needed for demo!)
 cp env.example .env
 
-# Start everything
+# Start APi-Saver
 docker-compose up -d --build
 
 # Setup database
 docker-compose exec backend npm run migrate
 docker-compose exec backend npm run seed
-> 💡 **Tip**: The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
+
+#💡 The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
 
 ```
 ### Step 3: Access
@@ -201,6 +202,7 @@ curl http://localhost/api/v1/proxy/your-source-name/path \
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
 
 
 
