@@ -188,14 +188,6 @@ curl http://localhost/api/v1/proxy/my-api/data \
 ## ⚙️ Configuration
 
 **For Demo**: The default `.env` file (copied from `env.example`) works out of the box! No changes needed.
-
-**For Production**: Edit `.env` and set:
-- `JWT_SECRET` (generate: `openssl rand -base64 32`)
-- `ENCRYPTION_KEY` (generate: `openssl rand -hex 32`)
-- `POSTGRES_PASSWORD` (strong password)
-- `NODE_ENV=production`
-- `DOMAIN` and `EMAIL` (if using HTTPS/SSL)
-
 See `env.example` for all available options and detailed comments.
 
 ## 🧪 Testing Your Setup
@@ -215,9 +207,6 @@ curl http://localhost/api/v1/proxy/your-source-name/path \
 
 ---
 
-## 📝 License
-
-MIT
 
 ## 🔒 Security
 
@@ -232,4 +221,5 @@ MIT
 ## 💬 Support
 
 For questions or to purchase the full version, contact **services@devops-corp.com**
+
 
