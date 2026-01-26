@@ -41,11 +41,11 @@ cd APi-Saver_demo
 cp env.example .env
 
 # Start APi-Saver
-docker-compose up -d --build
+docker compose up -d --build
 
 # Setup database
-docker-compose exec backend npm run migrate
-docker-compose exec backend npm run seed
+docker compose exec backend npm run migrate
+docker compose exec backend npm run seed
 
 #💡 The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
 
@@ -61,7 +61,7 @@ docker-compose exec backend npm run seed
 
 **Need to see your API key again?**
 ```bash
-docker-compose logs backend | grep "api_key"
+docker compose logs backend | grep "api_key"
 ```
 
 ## 📖 How It Works
@@ -133,19 +133,19 @@ No need to edit config files - everything is in the dashboard!
 
 ```bash
 # View logs
-docker-compose logs -f backend
+docker compose logs -f backend
 
 # Restart services
-docker-compose restart
+docker compose restart
 
 # Backup database (demo)
-docker-compose exec postgres pg_dump -U apisaver apisaver > backup.sql
+docker compose exec postgres pg_dump -U apisaver apisaver > backup.sql
 
 # Reset everything (deletes all data!)
-docker-compose down -v
-docker-compose up -d --build
-docker-compose exec backend npm run migrate
-docker-compose exec backend npm run seed
+docker compose down -v
+docker compose up -d --build
+docker compose exec backend npm run migrate
+docker compose exec backend npm run seed
 ```
 
 ## 📡 API Usage
