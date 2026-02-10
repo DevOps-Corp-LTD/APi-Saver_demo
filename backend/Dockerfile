@@ -3,6 +3,9 @@ FROM node:20-alpine AS builder
 
 WORKDIR /app
 
+# Update npm to latest version
+RUN npm install -g npm@11.9.0
+
 # Copy package files
 COPY package.json ./
 
@@ -16,6 +19,9 @@ COPY . .
 FROM node:20-alpine
 
 WORKDIR /app
+
+# Update npm to latest version
+RUN npm install -g npm@11.9.0
 
 # Add non-root user
 RUN addgroup -g 1001 -S nodejs && \

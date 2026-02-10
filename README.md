@@ -43,11 +43,16 @@ cp env.example .env
 # Start APi-Saver
 docker compose up -d --build
 
+#(If using owndomain) Run the initial certificate step once (e.g. init-ssl.sh) with DOMAIN and EMAIL set (e.g. from .env).
+set -a; source .env; set +a; ./scripts/init-ssl.sh
+
 # Setup database
 docker compose exec backend npm run migrate
 docker compose exec backend npm run seed
 
 #💡 The seed script displays your API key in the console output - save it! You'll need it for API calls and authentication.
+
+
 
 ```
 ### Step 3: Access
